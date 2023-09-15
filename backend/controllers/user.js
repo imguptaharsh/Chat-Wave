@@ -58,14 +58,16 @@ exports.authUser = asyncHandler(async (req, res) => {
 // /api/user?search=abc    // search query
 exports.getAllUsers = asyncHandler(async (req, res) => {
   const search = req.query.search
-//   console.log(search);
-//   res.send(search);
-  ? {
-  $or: [
-      { name: { $regex: req.query.search, $options: "i" } },
-      { email: { $regex: req.query.search, $options: "i" } },
-    ]}
+    ? //   console.log(search);
+      //   res.send(search);
+      {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
     : {};
-    const users=await User.find(search);
-    res.send({users});
+
+  const users = await User.find(search).find({ _id: { $ne: req.user._id } })
+  res.send(users);
 });

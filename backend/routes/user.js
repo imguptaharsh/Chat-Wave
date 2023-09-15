@@ -5,5 +5,5 @@ const {protect}= require('../middleware/protect');
 router
     .post('/',User.registerUser)
     .post('/login/',User.authUser)
-    .get('/',User.getAllUsers)
+    .get('/',protect,User.getAllUsers)
 module.exports=router; 
