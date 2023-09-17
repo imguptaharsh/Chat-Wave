@@ -45,6 +45,7 @@ exports.authUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      pic: user.pic,
       password: user.password,
       token: generateToken(user._id),
       message: "User Logged In Successfully",
