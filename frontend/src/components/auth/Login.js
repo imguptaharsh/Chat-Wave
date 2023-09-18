@@ -8,13 +8,12 @@ import {
   InputGroup,
   InputRightElement,
   VStack,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-// import { color } from "framer-motion";
-// import { set } from "mongoose";
-import { useHistory } from "react-router-dom";
 
+import { useHistory } from "react-router-dom";
+import {useChatState} from '../../Context/ChatProvider'
 function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -22,18 +21,16 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const toast = useToast();
-
-
-
+  const {setUser}=useChatState();
   const handleClick = () => setShow(!show);
 
   const guestHandler = () => {
     setEmail("guest@example.com");
     setPassword("guest");
   };
-  const submitHandler = async() => {
+  const submitHandler = async () => {
     setLoading(true);
-    if(!email || !password){
+    if (!email || !password) {
       toast({
         title: "Please Fill All Fields",
         status: "warning",
@@ -44,47 +41,33 @@ function Login() {
       setLoading(false);
       return;
     }
-   try{
-    const config= {
-      headers:{
-        "Content-Type":"application/json"
-      }
-    }
-    const data = await axios.post(
-      "/api/user/login",
-      {
-        email: email,
-        password: password,
-      },
-      config
-    ).then((res)=>{
-      console.log(res);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        "/api/user/login",
+        {
+          email: email,
+          password: password,
+        },
+        config
+      );
+      // console.log(res);
       toast({
-          title: res.data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom",
-        });
-      localStorage.setItem("userInfo", JSON.stringify(res.data));
+        title: data.name,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setUser(data);
+      localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
-      history.push("/chat");
-    }
-    );
-    // console.log(data);    
-    // toast({
-    //   title: "Login Successful",
-    //   status: "success",
-    //   duration: 5000,
-    //   isClosable: true,
-    //   position: "bottom",
-    // });
-    // localStorage.setItem("userInfo", JSON.stringify(data));
-    // setLoading(false);
-    // history.push("/chat");
-   } catch
-    (e){
-      setLoading(false);
+      history.push("/chats");
+    } catch (e) {
       toast({
         title: e.response.data.message,
         status: "error",
@@ -92,6 +75,7 @@ function Login() {
         isClosable: true,
         position: "bottom",
       });
+      setLoading(false);
     }
   };
 
@@ -148,7 +132,7 @@ function Login() {
         Login
       </Button>
       <Button
-        variant='solid'
+        variant="solid"
         colorScheme="red"
         style={{ marginTop: 15 }}
         width="100%"

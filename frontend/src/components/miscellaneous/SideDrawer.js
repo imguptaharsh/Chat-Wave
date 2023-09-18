@@ -3,15 +3,19 @@ import React, { useState } from "react";
 import { BellIcon, ChevronDownIcon, SearchIcon } from "@chakra-ui/icons";
 import { useChatState } from "../../Context/ChatProvider";
 import { ProfileModal } from "./ProfileModel";
-
+import { useHistory } from "react-router-dom";
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
-
+  const history = useHistory();
   const {user} =useChatState();
 
+  const logoutHandler=()=>{
+    localStorage.removeItem('userInfo')
+    history.push('/');
+  }       
   return (
     <>
       <Box
@@ -57,7 +61,7 @@ const SideDrawer = () => {
                 My Profile</MenuItem>
                 {/* <ProfileModal></ProfileModal> */}
                 <MenuDivider/>
-                <MenuItem>LogOut</MenuItem>
+                <MenuItem onClick={logoutHandler}>LogOut</MenuItem>
             </MenuList>
           </Menu>
         </div>

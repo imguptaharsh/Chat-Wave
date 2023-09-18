@@ -10,9 +10,10 @@ import {
   VStack,
   useToast
 } from "@chakra-ui/react";
-import { color } from "framer-motion";
 import axios from "axios";
 import {useHistory} from "react-router-dom";
+import {useChatState} from '../../Context/ChatProvider'
+import { set } from "mongoose";
 function Signup() {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
@@ -23,7 +24,7 @@ function Signup() {
   const [picLoading, setPicLoading] = useState(false);
   const toast = useToast();
   const history = useHistory();
-
+  const {setUser}=useChatState();
   const postDetails = (pic) => {
     setPicLoading(true);
     if (pic===undefined) {
@@ -107,7 +108,6 @@ function Signup() {
         {name,email,password,pic},
         config
       );
-      console.log(data);
       toast({
         title: "Account Created Successfully",
         status: "success",
@@ -115,6 +115,7 @@ function Signup() {
         isClosable: true,
         position: "bottom",
       });
+      setUser(data);
       localStorage.setItem("userInfo",JSON.stringify(data));
       setPicLoading(false);
       history.push('/chats');
