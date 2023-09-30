@@ -19,7 +19,7 @@ connectDB();
 // );
 app.use(express.json());
 
-app.use('/api/chats',chatRouter);
+app.use('/api/chat',chatRouter);
 app.use('/api/user',userRouter);
 app.use(notFound);
 app.use(errorHandler);;
